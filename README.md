@@ -1,161 +1,168 @@
-# Vexere AI Chatbot POC
+# Chatbot Hỗ Trợ Khách Hàng - Dự án Thử nghiệm (POC)
 
-This project is a Proof of Concept (POC) for an AI Chatbot for Vexere, designed to explore AI-driven customer interaction capabilities.
+Dự án này là một Dự án Thử nghiệm (Proof of Concept - POC) cho một Chatbot AI, được thiết kế để khám phá các khả năng tương tác với khách hàng do AI điều khiển.
 
-## Project Demo Video
+## Video Demo Dự án
 
-[Watch the project demo on Google Drive](https://drive.google.com/file/d/18DCeBR8PjrrkV49d4PGPJWCods91131I/view?usp=sharing)
+[Xem video demo dự án trên Google Drive](https://drive.google.com/file/d/18DCeBR8PjrrkV49d4PGPJWCods91131I/view?usp=sharing)
 
-## Objective
+## Tài liệu Liên quan
 
-The POC aims to demonstrate:
+- [Tài liệu Thiết kế (Design Document)](DESIGN_DOCUMENT.md)
+- [Đánh giá Code (Code Review)](CODE_REVIEW.md)
 
-1.  A text-based chat interface.
-2.  RAG-FAQ functionality (using a predefined set of FAQs).
-3.  One After-Service flow: Changing booking time ("đổi giờ").
-4.  A codebase structure that is ready to incorporate image and voice processing (though not implemented in detail).
-5.  Basic instructions for running and testing.
+## Mục tiêu
+
+POC này nhằm mục đích minh họa:
+
+1.  Một giao diện chat dựa trên văn bản.
+2.  Chức năng RAG-FAQ (sử dụng một bộ câu hỏi thường gặp được xác định trước).
+3.  Một quy trình Sau Dịch vụ: Thay đổi thời gian đặt vé ("đổi giờ").
+4.  Một cấu trúc mã nguồn sẵn sàng để tích hợp xử lý hình ảnh và giọng nói (mặc dù chưa được triển khai chi tiết).
+5.  Hướng dẫn cơ bản để chạy và kiểm thử.
 
 ## Tech Stack
 
 - **Backend:** Python (FastAPI)
 - **AI Core:** Google Vertex AI (Gemini 2.5 Pro Preview - model `gemini-2.5-pro-preview-05-06`)
 - **Frontend:** HTML, CSS, JavaScript
-- **FAQ Data:** JSON file (used by a local tool called by the AI)
+- **Dữ liệu FAQ:** Tệp JSON (được sử dụng bởi một công cụ cục bộ do AI gọi)
 
-## Backend Design and Flow
+## Thiết kế Backend và Luồng hoạt động
 
-The backend is built using FastAPI and is structured into several modules to handle different aspects of the chatbot's functionality.
+Backend được xây dựng bằng FastAPI và được cấu trúc thành nhiều module để xử lý các khía cạnh khác nhau của chức năng chatbot.
 
-### Core Modules and Their Responsibilities
+### Các Module Cốt lõi và Trách nhiệm
 
-| File                       | Responsibility                                                                                                                                          | Key Interactions                                                                                                                                |
-| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------ | :---------------------------------------------------------------------------------------------------------------------------------------------- |
-| `app/main.py`              | Main FastAPI application. Defines API endpoints (e.g., `/chat`), manages CORS, orchestrates the chat flow, handles conversation history and tool state. | Imports and uses `ai_manager` (from `ai_agents_manager.py`), `tools.py` functions, and `models.py` schemas.                                     |
-| `app/ai_agents_manager.py` | Acts as a factory or manager for different LLM agent implementations. Allows switching LLM providers. Provides a unified interface to the active agent. | Instantiates `VertexAIAgent` (from `vertex_agent.py`). Called by `main.py` to get agent responses.                                              |
-| `app/vertex_agent.py`      | Implements the specific logic for interacting with Google Vertex AI Gemini models. Defines tool schemas for the LLM. Handles API calls to Gemini.       | Uses `vertexai` SDK. Defines `FunctionDeclaration` for tools. Called by `AIAgentsManager`.                                                      |
-| `app/tools.py`             | Contains the Python implementations of the tools (functions) that the LLM can request to call (e.g., FAQ lookup, booking changes).                      | Functions are called by `main.py` based on LLM requests. `get_faq_answer` uses `faq_data.json`. `confirm_booking_time_change` calls a mock API. |
-| `app/models.py`            | Defines Pydantic data models (schemas) for API request and response validation and serialization (e.g., `ChatMessageInput`, `ChatMessageOutput`).       | Used by `main.py` for FastAPI endpoint request/response handling.                                                                               |
-| `app/faq_data.json`        | A JSON file containing predefined frequently asked questions, answers, and keywords.                                                                    | Loaded and used by the `get_faq_answer` tool in `tools.py`.                                                                                     |
+| Tệp                        | Trách nhiệm                                                                                                                                                                      | Tương tác chính                                                                                                                                       |
+| :------------------------- | :------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | :---------------------------------------------------------------------------------------------------------------------------------------------------- |
+| `app/main.py`              | Ứng dụng FastAPI chính. Định nghĩa các API endpoint (ví dụ: `/chat`), quản lý CORS, điều phối luồng chat, xử lý lịch sử hội thoại và trạng thái công cụ.                         | Imports và sử dụng `ai_manager` (từ `ai_agents_manager.py`), các hàm trong `tools.py`, và các schema Pydantic trong `models.py`.                      |
+| `app/ai_agents_manager.py` | Hoạt động như một factory hoặc manager cho các triển khai agent LLM khác nhau. Cho phép chuyển đổi nhà cung cấp LLM. Cung cấp một giao diện thống nhất cho agent đang hoạt động. | Khởi tạo `VertexAIAgent` (từ `vertex_agent.py`). Được gọi bởi `main.py` để lấy phản hồi của agent.                                                    |
+| `app/vertex_agent.py`      | Triển khai logic cụ thể để tương tác với các mô hình Google Vertex AI Gemini. Định nghĩa schema công cụ cho LLM. Xử lý các lệnh gọi API đến Gemini.                              | Sử dụng `vertexai` SDK. Định nghĩa `FunctionDeclaration` cho các công cụ. Được gọi bởi `AIAgentsManager`.                                             |
+| `app/tools.py`             | Chứa các triển khai Python của các công cụ (functions) mà LLM có thể yêu cầu gọi (ví dụ: tra cứu FAQ, thay đổi đặt vé).                                                          | Các hàm được gọi bởi `main.py` dựa trên yêu cầu của LLM. `get_faq_answer` sử dụng `faq_data.json`. `confirm_booking_time_change` gọi một API giả lập. |
+| `app/models.py`            | Định nghĩa các mô hình dữ liệu Pydantic (schemas) để xác thực và tuần tự hóa yêu cầu/phản hồi API (ví dụ: `ChatMessageInput`, `ChatMessageOutput`).                              | Được sử dụng bởi `main.py` để xử lý yêu cầu/phản hồi của FastAPI endpoint.                                                                            |
+| `app/faq_data.json`        | Một tệp JSON chứa các câu hỏi thường gặp, câu trả lời và từ khóa được xác định trước.                                                                                            | Được tải và sử dụng bởi công cụ `get_faq_answer` trong `tools.py`.                                                                                    |
 
-### Overall Chat Flow
+### Luồng Chat Tổng thể
 
-The typical flow for a user interaction is as follows:
+Luồng điển hình cho một tương tác của người dùng như sau:
 
-1.  **User Input:** The Frontend sends a user's message (along with `user_id` and optional `session_state`) to the `/chat` endpoint in `main.py`.
-2.  **Request to AI Manager:** `main.py` retrieves the conversation history for the user and passes the history and new message to `ai_agents_manager.ai_manager.get_agent_response()`.
-3.  **Agent Processing:** `AIAgentsManager` routes the request to the active agent, which is `vertex_agent.VertexAIAgent`.
-4.  **LLM Call (1st Pass):** `VertexAIAgent` constructs a prompt for the Gemini model, including the conversation history, the user's message, and the configuration of available tools (defined in `vertex_agent.py`). It then calls the Gemini API.
-5.  **LLM Response Analysis:**
-    - **Direct Answer:** If Gemini provides a direct text answer, this is passed back through `VertexAIAgent` and `AIAgentsManager` to `main.py`.
-    - **Function Call Request:** If Gemini determines a tool should be used, it responds with a "function call" request, specifying the tool name and arguments. This is also passed back to `main.py`.
-6.  **Tool Execution (if requested):**
-    - `main.py` identifies the requested tool and its arguments.
-    - It looks up the corresponding Python function in `tools.py` and executes it.
-    - The result from the tool function is captured.
-    - `main.py` updates the conversation history with the user's message, the model's function call request, and the tool's execution result.
-7.  **LLM Call (2nd Pass - if a tool was executed):**
-    - `main.py` sends the updated history (now including the tool result) back to the Gemini model via `AIAgentsManager` and `VertexAIAgent`. A generic prompt like "Based on the tool's output, what should I say to the user?" is often used.
-    - Gemini generates a natural language response based on the tool's output.
-8.  **Response to User:** The final text response (either from step 5a or step 7) is sent back to the Frontend by `main.py`, along with any updated session state.
-9.  **State Update:** `main.py` saves the updated conversation history and any relevant tool flow state for the user.
+1.  **User Input:** Frontend gửi tin nhắn của người dùng (cùng với `user_id` và `session_state` tùy chọn) đến API endpoint `/chat` trong `main.py`.
+2.  **Yêu cầu đến AI Manager:** `main.py` truy xuất lịch sử hội thoại cho người dùng và chuyển lịch sử cùng tin nhắn mới đến `ai_agents_manager.ai_manager.get_agent_response()`.
+3.  **Agent Processing:** `AIAgentsManager` định tuyến yêu cầu đến agent đang hoạt động, đó là `vertex_agent.VertexAIAgent`.
+4.  **LLM Call (Lần 1):** `VertexAIAgent` xây dựng một prompt cho mô hình Gemini, bao gồm lịch sử hội thoại, tin nhắn của người dùng và cấu hình các công cụ có sẵn (được định nghĩa trong `vertex_agent.py`). Sau đó, nó gọi API Gemini.
+5.  **Phân tích Phản hồi LLM:**
+    - **Direct Answer:** Nếu Gemini cung cấp câu trả lời văn bản trực tiếp, câu trả lời này được chuyển ngược qua `VertexAIAgent` và `AIAgentsManager` đến `main.py`.
+    - **Function Call Request:** Nếu Gemini xác định một công cụ nên được sử dụng, nó sẽ phản hồi bằng một "function call" request, chỉ định tên công cụ và các đối số. Yêu cầu này cũng được chuyển ngược đến `main.py`.
+6.  **Thực thi Công cụ (nếu được yêu cầu):**
+    - `main.py` xác định công cụ được yêu cầu và các đối số của nó.
+    - Nó tra cứu hàm Python tương ứng trong `tools.py` và thực thi nó.
+    - Kết quả từ hàm công cụ được ghi lại.
+    - `main.py` cập nhật lịch sử hội thoại với tin nhắn của người dùng, function call request của mô hình và kết quả thực thi công cụ.
+7.  **LLM Call (Lần 2 - nếu một công cụ đã được thực thi):**
+    - `main.py` gửi lịch sử đã cập nhật (bây giờ bao gồm kết quả công cụ) trở lại mô hình Gemini thông qua `AIAgentsManager` và `VertexAIAgent`. Một prompt chung chung như "Dựa trên đầu ra của công cụ, tôi nên nói gì với người dùng?" thường được sử dụng.
+    - Gemini tạo ra một phản hồi ngôn ngữ tự nhiên dựa trên đầu ra của công cụ.
+8.  **Phản hồi cho Người dùng:** Phản hồi văn bản cuối cùng (từ bước 5a hoặc bước 7) được gửi trở lại Frontend bởi `main.py`, cùng với bất kỳ `session_state` nào đã được cập nhật.
+9.  **Cập nhật Trạng thái:** `main.py` lưu lịch sử hội thoại đã cập nhật và bất kỳ `active_tool_states` nào có liên quan cho người dùng.
 
-### Visual Flow (Mermaid Diagram)
+### Sơ đồ Luồng (Mermaid Diagram)
 
 ![Backend Flow Diagram](backend_flow_diagram.png)
 
-## Project Structure
+## Cấu trúc Dự án
 
 ```
-vexere_chatbot_poc/
+chatbot_customer_service_poc/  # (Tên thư mục gốc ví dụ)
 ├── backend/
 │   ├── app/
 │   │   ├── __init__.py
-│   │   ├── main.py         # FastAPI application, chat endpoint, mock Vexere APIs
-│   │   ├── ai_agents_manager.py # Manages different LLM agent implementations
-│   │   ├── vertex_agent.py # Specific agent for Vertex AI Gemini
-│   │   ├── tools.py        # Agent tools (FAQ, change booking)
-│   │   ├── models.py       # Pydantic models for request/response
-│   │   └── faq_data.json   # Mock FAQ data
-│   ├── tests/              # Unit and integration tests (e.g., test_ai_agent.py)
-│   ├── requirements.txt    # Python dependencies
+│   │   ├── main.py         # Ứng dụng FastAPI, API endpoint chat, API Vexere giả lập
+│   │   ├── ai_agents_manager.py # Quản lý các triển khai agent LLM khác nhau
+│   │   ├── vertex_agent.py # Agent cụ thể cho Vertex AI Gemini
+│   │   ├── tools.py        # Công cụ của Agent (FAQ, đổi đặt vé)
+│   │   ├── models.py       # Các mô hình Pydantic cho request/response
+│   │   └── faq_data.json   # Dữ liệu FAQ giả lập
+│   ├── tests/              # Unit test và integration test (ví dụ: test_ai_agent.py)
+│   ├── requirements.txt    # Các dependency Python
 │   └── .gitignore
 ├── frontend/
 │   ├── index.html
 │   ├── style.css
 │   └── script.js
-├── gemini_api_caller.py    # Standalone script for testing direct Gemini API calls
+├── gemini_api_caller.py    # Script độc lập để kiểm thử gọi API Gemini trực tiếp
 └── README.md
+└── README_VI.md            # Bản README tiếng Việt
 ```
 
-## Setup and Running
+_(Lưu ý: Tên thư mục gốc `chatbot_customer_service_poc/` chỉ là ví dụ, bạn có thể đặt tên khác cho thư mục dự án của mình.)_
 
-### Prerequisites
+## Cài đặt và Chạy
+
+### Điều kiện tiên quyết
 
 - Python 3.8+
-- `uv` (for installing Python packages: `pip install uv`)
-- **Google Cloud SDK (gcloud CLI)** installed and configured.
-- **Application Default Credentials (ADC)** set up for Google Cloud. You can typically do this by running:
+- `uv` (để cài đặt các gói Python: `pip install uv`)
+- **Google Cloud SDK (gcloud CLI)** đã được cài đặt và cấu hình.
+- **Application Default Credentials (ADC)** đã được thiết lập cho Google Cloud. Bạn thường có thể làm điều này bằng cách chạy:
   ```bash
   gcloud auth application-default login
   ```
-- A Google Cloud Project with the **Vertex AI API enabled**.
-  The Project ID (`singular-ray-456411-t7`), Location (`us-central1`), and Model Name (`gemini-2.5-pro-preview-05-06`) are configured in `backend/app/vertex_agent.py`.
+- Một Google Cloud Project với **Vertex AI API đã được kích hoạt**.
+  Project ID (`singular-ray-456411-t7`), Location (`us-central1`), và Model Name (`gemini-2.5-pro-preview-05-06`) được cấu hình trong `backend/app/vertex_agent.py`.
 
 ### Backend
 
-1.  **Clone the repository:**
+1.  **Sao chép (Clone) repository:**
 
     ```bash
     git clone <repository_url>
-    cd vexere_chatbot_poc # Or your project root
+    cd chatbot_customer_service_poc # Hoặc thư mục gốc dự án của bạn
     ```
 
-2.  **Create a virtual environment (recommended):**
+2.  **Tạo môi trường ảo (khuyến nghị):**
 
     ```bash
     python -m venv venv
-    source venv/bin/activate  # On Windows: venv\Scripts\activate
+    source venv/bin/activate  # Trên Windows: venv\Scripts\activate
     ```
 
-3.  **Install dependencies using uv (from the project root):**
+3.  **Cài đặt các dependency bằng uv (từ thư mục gốc dự án):**
 
     ```bash
     uv pip install -r backend/requirements.txt
     ```
 
-4.  **Run the FastAPI server (from the project root):**
+4.  **Chạy máy chủ FastAPI (từ thư mục gốc dự án):**
     ```bash
     uvicorn backend.app.main:app --reload --port 8000 --app-dir .
     ```
-    The backend server will be running at `http://localhost:8000`. Ensure your Google Cloud credentials are set up correctly for Vertex AI to function.
+    Máy chủ backend sẽ chạy tại `http://localhost:8000`. Đảm bảo thông tin xác thực Google Cloud của bạn được thiết lập chính xác để Vertex AI hoạt động.
 
 ### Frontend
 
-1.  Open the `frontend/index.html` file in your web browser.
+1.  Mở tệp `frontend/index.html` trong trình duyệt web của bạn.
 
-## How to Use
+## Cách sử dụng
 
-1.  Once the backend is running and `frontend/index.html` is open in the browser, you can type messages into the chat interface.
-2.  **Try asking an FAQ:**
+1.  Sau khi backend đang chạy và `frontend/index.html` được mở trong trình duyệt, bạn có thể nhập tin nhắn vào giao diện chat.
+2.  **Thử hỏi một câu FAQ:**
     - "How do I cancel my ticket?"
     - "What payment methods are accepted?"
-3.  **Try the "change booking time" flow:**
-    - Type: "I want to change my booking time" or "đổi giờ vé"
-    - The bot will ask for your booking ID. (e.g., `VX123`)
-    - Then, it will ask for the new desired time. (e.g., `2025-12-25 14:30:00`)
-    - The bot will then confirm if the mock change was successful.
+3.  **Thử quy trình "change booking time":**
+    - Nhập: "I want to change my booking time" hoặc "đổi giờ vé"
+    - Bot sẽ hỏi mã đặt vé của bạn. (ví dụ: `VX123`)
+    - Sau đó, nó sẽ hỏi thời gian mới mong muốn. (ví dụ: `2025-12-25 14:30:00`)
+    - Bot sau đó sẽ xác nhận nếu việc thay đổi giả lập thành công.
 
-## Notes on the POC
+## Ghi chú về POC
 
-- **LLM Integration:** This POC integrates with Google Vertex AI using the Gemini model specified in `backend/app/vertex_agent.py`. The agent logic and orchestration handle interactions with the LLM, including tool/function calling.
-- **RAG for FAQ:** The `get_faq_answer` tool is called by the LLM. This tool uses keyword matching on the `faq_data.json` file. A full RAG setup with a vector database is outside the scope of this POC but would be the next step for production.
-- **State Management:**
-  - Conversation history for Gemini (as `List[Content]`) is managed in `main.py`.
-  - Explicit state for multi-turn tool flows (like `change_booking`) is managed using `active_tool_states` in `main.py`.
-- **Error Handling:** Basic error handling is in place. Production systems would require more robust mechanisms.
-- **Security:** Standard security considerations for APIs and LLM interactions would need to be addressed for production.
-- **Image/Voice:** Placeholder functions in `tools.py` exist, but are not integrated into the LLM flow.
-- **Testing:** `backend/tests/test_ai_agent.py` provides examples of integration tests for the AI agent flow. More comprehensive testing would be needed for production.
-- **Cost:** Using Vertex AI will incur costs based on model usage. Be mindful of this.
-# chatbot-customer-service
+- **Tích hợp LLM:** POC này tích hợp với Google Vertex AI sử dụng mô hình Gemini được chỉ định trong `backend/app/vertex_agent.py`. Logic agent và việc điều phối xử lý các tương tác với LLM, bao gồm cả tool/function calling.
+- **RAG cho FAQ:** Công cụ `get_faq_answer` được LLM gọi. Công cụ này sử dụng khớp từ khóa trên tệp `faq_data.json`. Một thiết lập RAG đầy đủ với vector database nằm ngoài phạm vi của POC này nhưng sẽ là bước tiếp theo cho phiên bản sản xuất.
+- **Quản lý Trạng thái:**
+  - Lịch sử hội thoại cho Gemini (dưới dạng `List[Content]`) được quản lý trong `main.py`.
+  - Trạng thái rõ ràng cho các luồng công cụ nhiều lượt (như `change_booking`) được quản lý bằng `active_tool_states` trong `main.py`.
+- **Xử lý Lỗi:** Xử lý lỗi cơ bản đã được thực hiện. Hệ thống sản xuất sẽ yêu cầu các cơ chế mạnh mẽ hơn.
+- **Bảo mật:** Các cân nhắc bảo mật tiêu chuẩn cho API và tương tác LLM sẽ cần được giải quyết cho phiên bản sản xuất.
+- **Hình ảnh/Giọng nói:** Các hàm giữ chỗ trong `tools.py` tồn tại, nhưng không được tích hợp vào luồng LLM.
+- **Kiểm thử:** `backend/tests/test_ai_agent.py` cung cấp các ví dụ về integration test cho luồng agent AI. Kiểm thử toàn diện hơn sẽ cần thiết cho phiên bản sản xuất.
+- **Chi phí:** Việc sử dụng Vertex AI sẽ phát sinh chi phí dựa trên việc sử dụng mô hình. Hãy lưu ý điều này.
