@@ -1,0 +1,168 @@
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 100vh;
+    margin: 0;
+    color: #333;
+}
+
+.chat-container {
+    width: 400px;
+    max-width: 90%;
+    height: 600px;
+    background-color: #fff;
+    border-radius: 8px;
+    box-shadow: 0 0 15px rgba(0, 0, 0, 0.1);
+    display: flex;
+    flex-direction: column;
+    overflow: hidden;
+}
+
+.chat-header {
+    background-color: #007bff; /* Vexere-like blue */
+    color: white;
+    padding: 15px;
+    text-align: center;
+    font-size: 1.2em;
+}
+
+.chat-header h2 {
+    margin: 0;
+    font-weight: normal;
+}
+
+.chat-messages {
+    flex-grow: 1;
+    padding: 15px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+}
+
+.message {
+    padding: 10px 15px;
+    border-radius: 18px;
+    max-width: 80%;
+    word-wrap: break-word;
+}
+
+.message p {
+    margin: 0;
+    line-height: 1.4;
+}
+
+.user-message {
+    background-color: #e1f5fe; /* Light blue for user */
+    align-self: flex-end;
+    border-bottom-right-radius: 5px;
+}
+
+.bot-message {
+    background-color: #f0f0f0; /* Light grey for bot */
+    align-self: flex-start;
+    border-bottom-left-radius: 5px;
+}
+
+.chat-input-area {
+    display: flex;
+    padding: 15px;
+    border-top: 1px solid #ddd;
+    background-color: #f9f9f9;
+}
+
+#userInput {
+    flex-grow: 1;
+    padding: 10px;
+    border: 1px solid #ccc;
+    border-radius: 20px;
+    margin-right: 10px;
+    font-size: 1em;
+}
+
+#sendButton {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 20px;
+    cursor: pointer;
+    font-size: 1em;
+    transition: background-color 0.3s ease;
+}
+
+#sendButton:hover {
+    background-color: #0056b3;
+}
+
+/* Scrollbar styling */
+.chat-messages::-webkit-scrollbar {
+    width: 6px;
+}
+
+.chat-messages::-webkit-scrollbar-track {
+    background: #f1f1f1;
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb {
+    background: #007bff;
+    border-radius: 10px;
+}
+
+.chat-messages::-webkit-scrollbar-thumb:hover {
+    background: #0056b3;
+}
+
+/* Attachment Area Styles */
+.attachment-controls {
+    padding: 5px 15px 10px 15px; /* Reduced top padding */
+    background-color: #f9f9f9;
+    border-top: 1px solid #eee; /* Lighter border */
+    display: flex;
+    flex-direction: column; /* Stack file inputs vertically */
+    gap: 8px; /* Space between file input rows */
+}
+
+.file-input-container {
+    display: flex;
+    align-items: center;
+    gap: 8px; /* Space between label, input, filename, button */
+}
+
+.file-label {
+    font-size: 0.9em;
+    color: #555;
+}
+
+.file-input {
+    font-size: 0.9em;
+    max-width: 150px; /* Limit width of file input itself */
+}
+
+.file-name-display {
+    font-size: 0.8em;
+    color: #777;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    flex-grow: 1; /* Allow filename to take available space */
+}
+
+.clear-button {
+    font-size: 0.8em;
+    padding: 3px 8px;
+    background-color: #ff4d4d;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    transition: background-color 0.2s ease;
+}
+
+.clear-button:hover {
+    background-color: #cc0000;
+}

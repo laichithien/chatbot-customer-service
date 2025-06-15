@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vexere Chatbot POC</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <div class="chat-container">
+        <div class="chat-header">
+            <h2>Vexere Chatbot POC</h2>
+        </div>
+        <div class="chat-messages" id="chatMessages">
+            <!-- Chat messages will appear here -->
+            <div class="message bot-message">
+                <p>Hello! How can I help you today? You can ask about FAQs or request to change your booking time.</p>
+            </div>
+        </div>
+        <div class="chat-input-area">
+            <input type="text" id="userInput" placeholder="Type your message...">
+            <button id="sendButton">Send</button>
+        </div>
+        <div class="attachment-controls">
+            <div class="file-input-container">
+                <label for="imageUpload" class="file-label">Attach Image:</label>
+                <input type="file" id="imageUpload" class="file-input" accept="image/png, image/jpeg, image/webp, image/gif">
+                <span id="imageFileName" class="file-name-display"></span>
+                <button id="clearImageButton" class="clear-button" style="display:none;">Clear Image</button>
+            </div>
+            <div class="file-input-container">
+                <label for="audioUpload" class="file-label">Attach Audio:</label>
+                <input type="file" id="audioUpload" class="file-input" accept="audio/wav, audio/mp3, audio/ogg, audio/mpeg">
+                <span id="audioFileName" class="file-name-display"></span>
+                <button id="clearAudioButton" class="clear-button" style="display:none;">Clear Audio</button>
+            </div>
+        </div>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
