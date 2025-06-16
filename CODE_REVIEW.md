@@ -17,7 +17,7 @@ Tài liệu này nhằm mục đích tự đánh giá mã nguồn của dự án
 
 - **Ngôn ngữ Frontend (HTML, CSS, JavaScript):**
   - **Cấu trúc:** Mã sạch sẽ, CSS trong file riêng. JavaScript thuần, xử lý DOM và gọi API.
-  - **Định dạng:** Có thể đã được IDE tự động định dạng.
+  - **Định dạng:** Đã được IDE tự động định dạng.
 
 ## 2. Kiểm thử & CI (Testing & Continuous Integration)
 
