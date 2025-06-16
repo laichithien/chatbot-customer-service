@@ -36,7 +36,7 @@ Tài liệu này nhằm mục đích tự đánh giá mã nguồn của dự án
   - **Phạm vi:** Kiểm tra toàn bộ luồng từ UI -> API -> LLM -> Tool -> Mock API -> UI.
 
 - **Script Kiểm thử Độc lập:**
-  - `gemini_api_caller.py` (test API Gemini), `render_mermaid.py` (tạo diagram).
+  - `gemini_api_caller.py` (test API Gemini).
 
 ### 2.2. Đề xuất Quy trình CI/CD (Cho Kiến trúc Mục tiêu)
 
